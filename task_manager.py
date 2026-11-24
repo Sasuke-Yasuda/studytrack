@@ -77,3 +77,25 @@ def update_task(task_id, new_description):
 
     # If no assignment was found
     raise ValueError("Assignment not found.")
+
+def delete_task(task_id):
+    """Delete an existing homework assignment."""
+
+    # Load existing assignments
+    tasks = load_tasks()
+
+    # Find the assignment
+    for task in tasks:
+        if task["id"] == task_id:
+
+            # Remove the assignment
+            tasks.remove(task)
+
+            # Save the updated assignments
+            save_tasks(tasks)
+
+            # Return the deleted assignment
+            return task
+
+    # If no assignment was found
+    raise ValueError("Assignment not found.")

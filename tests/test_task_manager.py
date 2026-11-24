@@ -118,3 +118,42 @@ def test_update_rejects_missing_id(monkeypatch, tmp_path):
 
     with pytest.raises(ValueError):
         task_manager.update_task(999, "Science homework")
+
+def test_delete_task(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task = task_manager.add_task("Math homework")
+
+    deleted = task_manager.delete_task(task["id"])
+
+    assert deleted["id"] == 1
+    assert deleted["description"] == "Math homework"
+    assert task_manager.view_tasks() == []
+
+
+def test_delete_preserves_other_tasks(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task_manager.add_task("Math homework")
+    task_manager.add_task("Science homework")
+
+    task_manager.delete_task(1)
+
+    tasks = task_manager.view_tasks()
+
+    assert len(tasks) == 1
+    assert tasks[0]["id"] == 2
+    assert tasks[0]["description"] == "Science homework"
+
+
+def test_delete_rejects_missing_id(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    with pytest.raises(ValueError):
+        task_manager.delete_task(999)
