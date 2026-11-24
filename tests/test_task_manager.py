@@ -47,3 +47,27 @@ def test_task_ids_are_unique(monkeypatch, tmp_path):
 
     assert first["id"] == 1
     assert second["id"] == 2
+
+def test_view_tasks(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task_manager.add_task("Math homework")
+    task_manager.add_task("Science homework")
+
+    tasks = task_manager.view_tasks()
+
+    assert len(tasks) == 2
+    assert tasks[0]["description"] == "Math homework"
+    assert tasks[1]["description"] == "Science homework"
+
+
+def test_view_empty_tasks(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    tasks = task_manager.view_tasks()
+
+    assert tasks == []

@@ -15,7 +15,11 @@ def load_tasks():
 
     with open(TASKS_FILE, "r") as file:
         return json.load(file)
+    
+def view_tasks():
+    """Return all saved homework assignments."""
 
+    return load_tasks()
 
 def save_tasks(tasks):
     """Save homework assignments to the JSON file."""
