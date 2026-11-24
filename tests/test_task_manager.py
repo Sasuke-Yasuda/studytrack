@@ -71,3 +71,50 @@ def test_view_empty_tasks(monkeypatch, tmp_path):
     tasks = task_manager.view_tasks()
 
     assert tasks == []
+
+def test_update_task(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task = task_manager.add_task("Math homework")
+
+    updated = task_manager.update_task(
+        task["id"], "Chemistry homework"
+    )
+
+    assert updated["id"] == 1
+    assert updated["description"] == "Chemistry homework"
+
+
+def test_update_preserves_task_id(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task = task_manager.add_task("Math homework")
+    original_id = task["id"]
+
+    updated = task_manager.update_task(original_id, "Science homework")
+
+    assert updated["id"] == original_id
+
+
+def test_update_rejects_empty_description(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    task = task_manager.add_task("Math homework")
+
+    with pytest.raises(ValueError):
+        task_manager.update_task(task["id"], "   ")
+
+
+def test_update_rejects_missing_id(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        task_manager, "TASKS_FILE", tmp_path / "tasks.json"
+    )
+
+    with pytest.raises(ValueError):
+        task_manager.update_task(999, "Science homework")

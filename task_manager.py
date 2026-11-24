@@ -52,3 +52,28 @@ def add_task(description):
     save_tasks(tasks)
 
     return new_task
+
+def update_task(task_id, new_description):
+    """Update an existing homework assignment."""
+
+    # Reject empty descriptions
+    if not isinstance(new_description, str) or not re.search(r"\S", new_description):
+        raise ValueError("Assignment cannot be empty.")
+
+    # Load existing assignments
+    tasks = load_tasks()
+
+    # Find the assignment
+    for task in tasks:
+        if task["id"] == task_id:
+
+            # Update its description
+            task["description"] = new_description.strip()
+
+            # Save the updated assignments
+            save_tasks(tasks)
+
+            return task
+
+    # If no assignment was found
+    raise ValueError("Assignment not found.")
